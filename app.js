@@ -102,6 +102,11 @@ var uIController = (function() {
         </div>
         `
       }
+    },
+
+    clearFields: function () {
+      var inputfields = document.querySelectorAll('input[name=field]');
+      inputfields.forEach(input => input.value = '');
     }
   }
 
@@ -121,6 +126,9 @@ var controller = (function(budgCrt, uiCrt) {
     console.log('newItem', newItem)
     uiCrt.addListItem(newItem, input.type);
 
+    // clear input fields
+    
+
     // calculate the budget
 
     // display budget on UI
@@ -128,5 +136,7 @@ var controller = (function(budgCrt, uiCrt) {
   }
 
   form.addEventListener('submit', addItem);
+
+  form.addEventListener('submit', uiCrt.clearFields);
 
 })(budgetController, uIController);
