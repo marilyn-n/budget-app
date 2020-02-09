@@ -24,7 +24,35 @@ var budgetController = (function() {
     this.value = value
   };
 
-  
+  return {
+    // method to add a new expense or income item to list
+    addItem: function(type, des, val) { 
+      var newItem, ID;
+
+      // create new id
+      if (data.allItems[type].length > 0) {
+        ID = data.allItems[type][data.allItems[type].length -1].id + 1;
+      } else {
+        ID = 0;
+      }
+      
+      // create new item based on type
+      if (type === 'exp') {
+        newItem = new Expense(ID, des, val) 
+      } else if(type === 'inc') {
+        newItem = new Income(ID, des, val) 
+      }
+
+      // push newItem to data expense or income array
+      data.allItems[type].push(newItem);
+    },
+
+    testing: function (){
+      console.log(data);
+      
+    }
+    
+  }
 
 })();
 
@@ -51,8 +79,8 @@ var controller = (function(budgCrt, uiCrt) {
     e.preventDefault();
     // get the value of input field
     var input = uiCrt.getInput();
-    console.log(input);
-
+    var newItem = budgCrt.addItem(input.type, input.description, input.value);
+    
     // add the item to the budget controller
 
     // add the item to the UI controller
