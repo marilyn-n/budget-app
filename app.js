@@ -142,6 +142,23 @@ var uIController = (function() {
       var inputFields = document.querySelectorAll('input[name=field]');
       inputFields.forEach(input => input.value = '');
       inputFields[0].focus();
+    },
+
+    displayBudget: function(obj) {
+      console.log(obj);
+      
+      var budtitle = document.querySelector('.budget__value');
+      var budIncome = document.querySelector('.budget__income--value');
+      var budPercentage = document.querySelector('.budget__income--percentage');
+      var budExpenses = document.querySelector('.budget__expenses--value');
+      var percentageLabel = document.querySelector('.budget__expenses--percentage');
+
+      budtitle.textContent = `$ ${obj.budget}`;
+      budIncome.textContent = `+ ${obj.totalInc}`;
+      budExpenses.textContent = `- ${obj.totalExp}`;
+
+      obj.percentage > 0 ? percentageLabel.textContent = `${obj.percentage}%` : '---'
+      
     }
   }
 
@@ -157,7 +174,7 @@ var controller = (function(budgCrt, uiCrt) {
     // return the budget
     var budget = budgCrt.getBudget()
     // display budget to UI
-    console.log(budget, 'bud dataaa');
+    uiCrt.displayBudget(budget)
     
   }
 
