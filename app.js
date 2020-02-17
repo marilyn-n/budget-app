@@ -61,6 +61,19 @@ var budgetController = (function() {
       return newItem
     },
 
+    deleteItem: function(type, id) {
+
+     var ids = data.allItems[type].map(function(item) {
+      return item.id
+     });
+
+     var index = ids.indexOf(id);
+
+     if (index !== -1) {
+       data.allItems[type].splice(index, 1);
+     }
+    },
+
     budgetCalculator: function() {
       // calculate the budget
       calculateTotal('exp');
@@ -112,10 +125,10 @@ var uIController = (function() {
       if (type === 'exp') {
         expenseContainer.innerHTML += 
         `
-        <div class="item clearfix" id="income-${obj.id}">
+        <div class="item clearfix" id="exp-${obj.id}">
           <div class="item__description">${obj.description}</div>
           <div class="right clearfix">
-              <div class="item__value">${obj.value}</div>
+              <div class="item__value">- ${obj.value}</div>
               <div class="item__delete">
                   <button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button>
               </div>
@@ -125,10 +138,10 @@ var uIController = (function() {
       } else if(type === 'inc') {
         incomeContainer.innerHTML += 
         `
-        <div class="item clearfix" id="income-">
+        <div class="item clearfix" id="inc-${obj.id}">
           <div class="item__description">${obj.description}</div>
           <div class="right clearfix">
-              <div class="item__value">${obj.value}</div>
+              <div class="item__value">+ ${obj.value}</div>
               <div class="item__delete">
                   <button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button>
               </div>
@@ -145,11 +158,8 @@ var uIController = (function() {
     },
 
     displayBudget: function(obj) {
-      console.log(obj);
-      
       var budtitle = document.querySelector('.budget__value');
       var budIncome = document.querySelector('.budget__income--value');
-      var budPercentage = document.querySelector('.budget__income--percentage');
       var budExpenses = document.querySelector('.budget__expenses--value');
       var percentageLabel = document.querySelector('.budget__expenses--percentage');
 
@@ -167,6 +177,7 @@ var uIController = (function() {
 // GLOBAL APP CONTROLLER
 var controller = (function(budgCrt, uiCrt) {
   const form = document.querySelector('form.add__container');
+  const container = document.querySelector('.container.clearfix');
 
   const updateBudget = () => {
     // calculate budget
@@ -178,7 +189,7 @@ var controller = (function(budgCrt, uiCrt) {
     
   }
 
-  const addItem = (e) => {
+  const addItem = function(e) {
     e.preventDefault();
     // get the value of input field
 
@@ -197,6 +208,21 @@ var controller = (function(budgCrt, uiCrt) {
 
   }
 
+  const crtDeleteItem = function(e) {
+    var itemID = e.target.parentElement.parentElement.parentElement.parentElement.id;
+    if (itemID) {
+      var splitID = itemID.split('-')
+      var type = splitID[0];
+      var ID = Number(splitID[1]);
+      // 1. delete the item from the data structure
+        budgetController.deleteItem(type, ID)
+      // 2. detele item from the UI
+      // 3. update and show new budget
+    }
+    
+  }
+
+  container.addEventListener('click', crtDeleteItem);
   form.addEventListener('submit', addItem);
   form.addEventListener('submit', uiCrt.clearFields);
 
