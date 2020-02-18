@@ -130,12 +130,17 @@ var budgetController = (function() {
 
 // UI CONTROLLER
 var uIController = (function() {
+  
+  var formatNumber = function(num) {
+    return num.toFixed(2)
+  }
+
   return {
     getInput: function() {
       return {
         type: document.querySelector('.add__type').value,
         description: document.querySelector('.add__description').value, 
-        value: Number(document.querySelector('.add__value').value)
+        value: parseInt(document.querySelector('.add__value').value)
       }
     },
 
@@ -150,7 +155,7 @@ var uIController = (function() {
         <div class="item clearfix" id="exp-${obj.id}">
           <div class="item__description">${obj.description}</div>
           <div class="right clearfix">
-              <div class="item__value">- ${obj.value}</div>
+              <div class="item__value">- ${formatNumber(obj.value)}</div>
               <div class="item__percentage">${obj.percentage}%</div>
               <div class="item__delete">
                   <button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button>
@@ -164,7 +169,7 @@ var uIController = (function() {
         <div class="item clearfix" id="inc-${obj.id}">
           <div class="item__description">${obj.description}</div>
           <div class="right clearfix">
-              <div class="item__value">+ ${obj.value}</div>
+              <div class="item__value">+ ${formatNumber(obj.value)}</div>
               <div class="item__delete">
                   <button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button>
               </div>
@@ -191,9 +196,9 @@ var uIController = (function() {
       var budExpenses = document.querySelector('.budget__expenses--value');
       var percentageLabel = document.querySelector('.budget__expenses--percentage');
 
-      budtitle.textContent = `$ ${obj.budget}`;
-      budIncome.textContent = `+ ${obj.totalInc}`;
-      budExpenses.textContent = `- ${obj.totalExp}`;
+      budtitle.textContent = `$ ${formatNumber(obj.budget)}`;
+      budIncome.textContent = `+ ${formatNumber(obj.totalInc)}`;
+      budExpenses.textContent = `- ${formatNumber(obj.totalExp)}`;
 
       obj.percentage > 0 ? percentageLabel.textContent = `${obj.percentage}%` : '---'
       
@@ -214,6 +219,8 @@ var uIController = (function() {
 var controller = (function(budgCrt, uiCrt) {
   const form = document.querySelector('form.add__container');
   const container = document.querySelector('.container.clearfix');
+  const month = document.querySelector('.budget__title--month');
+  var option = document.querySelector('.add__type');
 
   const updatePercentages = () => {
     // 1. calculate percentages
@@ -271,8 +278,28 @@ var controller = (function(budgCrt, uiCrt) {
     
   }
 
+  const focusColor = () => {
+    var fields = [...document.querySelectorAll('.add__description, .add__value, .add__type')];
+    var valueBtn = document.querySelector('.add__btn');
+
+    fields.map(field => field.classList.toggle('red-focus'));
+
+    valueBtn.classList.toggle('red');
+
+    
+  }
+
   container.addEventListener('click', crtDeleteItem);
   form.addEventListener('submit', addItem);
   form.addEventListener('submit', uiCrt.clearFields);
+  window.addEventListener('load', function() {
+    var now = new Date();
+    var currentMonth = now.toDateString();
+    month.textContent = currentMonth;
+  })
+
+  option.addEventListener('change', focusColor)
+  
+
 
 })(budgetController, uIController);
